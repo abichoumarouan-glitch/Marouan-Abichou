@@ -1,0 +1,14 @@
+{
+  "name": "mizu",
+  "private": true,
+  "description": "Mizu — outil de gestion pour restaurants (restaurateurs, comptables, collaborateurs)",
+  "scripts": {
+    "install:all": "npm --prefix server install && npm --prefix client install",
+    "build": "npm --prefix client run build",
+    "seed": "npm --prefix server run seed",
+    "start": "npm --prefix server start",
+    "dev:server": "npm --prefix server run dev",
+    "dev:client": "npm --prefix client run dev"
+  },
+  "engines": { "node": ">=22.13" }
+}

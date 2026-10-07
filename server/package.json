@@ -1,0 +1,24 @@
+{
+  "name": "mizu-server",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "node --disable-warning=ExperimentalWarning src/index.js",
+    "dev": "node --disable-warning=ExperimentalWarning --watch src/index.js",
+    "seed": "node --disable-warning=ExperimentalWarning src/seed.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.131.0",
+    "bcryptjs": "^3.0.3",
+    "cookie-parser": "^1.4.7",
+    "exceljs": "^4.4.0",
+    "express": "^5.2.1",
+    "multer": "^2.4.0",
+    "pdfkit": "^0.20.2",
+    "web-push": "^3.6.7"
+  },
+  "type": "module",
+  "private": true
+}
