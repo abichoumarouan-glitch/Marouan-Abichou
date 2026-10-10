@@ -34,12 +34,17 @@ export function AuthProvider({ children }) {
     await refresh();
     return user;
   };
+  const register = async (body) => {
+    const { user } = await api.post('/api/auth/register', body);
+    await refresh();
+    return user;
+  };
   const logout = async () => {
     await api.post('/api/auth/logout').catch(() => {});
     setState({ loading: false, user: null, ai: false });
   };
 
-  return <AuthContext.Provider value={{ ...state, login, logout, refresh }}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={{ ...state, login, register, logout, refresh }}>{children}</AuthContext.Provider>;
 }
 
 export const useAuth = () => useContext(AuthContext);

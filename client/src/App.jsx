@@ -2,6 +2,7 @@ import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { useAuth, HOME } from './auth.jsx';
 import { Spinner } from './ui.jsx';
 import Login from './pages/Login.jsx';
+import Register from './pages/Register.jsx';
 import RestaurateurApp from './pages/restaurateur/RestaurateurApp.jsx';
 import CollaborateurApp from './pages/collaborateur/CollaborateurApp.jsx';
 import ComptableApp from './pages/comptable/ComptableApp.jsx';
@@ -27,6 +28,7 @@ export default function App() {
   return (
     <Routes>
       <Route path="/connexion" element={<Login />} />
+      <Route path="/inscription" element={<Register />} />
       <Route path="/restaurateur/*" element={<RequireRole role="restaurateur"><RestaurateurApp /></RequireRole>} />
       <Route path="/collaborateur/*" element={<RequireRole role="collaborateur"><CollaborateurApp /></RequireRole>} />
       <Route path="/comptable/*" element={<RequireRole role="comptable"><ComptableApp /></RequireRole>} />
