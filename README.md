@@ -23,7 +23,18 @@ npm start             # http://localhost:3000
 
 Développement : `npm run dev:server` (port 3000) et `npm run dev:client` (Vite sur 5173, proxy `/api`).
 
+### Créer un compte
+
+Depuis l'écran de connexion, **« Créer un compte »** :
+- **Comptable** : crée son cabinet, puis ajoute ses clients restaurateurs depuis son espace ;
+- **Collaborateur** : saisit le **code d'invitation** de son établissement (visible par le restaurateur dans *Plannings et équipe › Collaborateurs*, renouvelable à tout moment) et rejoint directement son équipe.
+
+Les comptes restaurateurs sont créés par leur expert-comptable ; le restaurateur peut aussi créer lui-même les comptes de ses collaborateurs.
+
 ### Comptes de démonstration (mot de passe `Mizu-demo-2026`)
+
+Avec la base de démonstration, l'écran de connexion affiche un bouton par espace pour entrer en un clic. Codes d'invitation de démo : `COMPTOIR`, `BISTROT`, `PETITZINC`.
+
 
 | Rôle | Email |
 |---|---|

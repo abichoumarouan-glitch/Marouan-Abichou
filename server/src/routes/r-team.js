@@ -1,6 +1,6 @@
 import express from 'express';
 import { all, get, run, insert, tx } from '../db.js';
-import { fail, createUser, generatePassword, hashPassword } from '../auth.js';
+import { fail, createUser, generatePassword, hashPassword, joinCodeFor } from '../auth.js';
 import { nowLocal, today, addDays, mondayOf, isDate, isDateTime, normDateTime } from '../time.js';
 import { num, str } from '../util.js';
 import { hoursSummary, liveStatus, workedByDay, collaboratorEvents, EVENT_LABELS } from '../hours.js';
@@ -26,7 +26,11 @@ function ownCollab(estId, id) {
 
 // ---- Équipe : comptes collaborateurs ----
 router.get('/team', (req, res) => {
-  res.json({ collaborators: collaborators(req.est.id, true).map((c) => ({ ...c, live: liveStatus(c.id) })) });
+  res.json({ collaborators: collaborators(req.est.id, true).map((c) => ({ ...c, live: liveStatus(c.id) })), join_code: joinCodeFor(req.est.id) });
+});
+
+router.post('/team/join-code', (req, res) => {
+  res.json({ join_code: joinCodeFor(req.est.id, true) });
 });
 
 router.post('/team', (req, res) => {
