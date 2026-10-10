@@ -14,6 +14,8 @@ const { nowLocal, today, addDays, mondayOf } = await import('./time.js');
 const { validateInvoice, snapshotDish, classifyText } = await import('./foodcost.js');
 
 const PASSWORD = 'Mizu-demo-2026';
+const { setSetting } = await import('./db.js');
+setSetting('demo', '1');
 const T = today();
 const NOW = nowLocal();
 let seed = 42;
@@ -29,6 +31,9 @@ createUser({ email: 'support@mizu.demo', password: PASSWORD, first_name: 'Équip
 const est1 = insert('INSERT INTO establishments (owner_id, name, address, created_at) VALUES (?, ?, ?, ?)', resto, 'Le Comptoir de Camille', '12 rue Mercière, 69002 Lyon', NOW);
 const est2 = insert('INSERT INTO establishments (owner_id, name, address, created_at) VALUES (?, ?, ?, ?)', resto, 'Camille Bistrot', '4 place Sathonay, 69001 Lyon', NOW);
 const est3 = insert('INSERT INTO establishments (owner_id, name, address, created_at) VALUES (?, ?, ?, ?)', resto2, 'Le Petit Zinc', '8 rue Oberkampf, 75011 Paris', NOW);
+run("UPDATE establishments SET join_code = 'COMPTOIR' WHERE id = ?", est1);
+run("UPDATE establishments SET join_code = 'BISTROT' WHERE id = ?", est2);
+run("UPDATE establishments SET join_code = 'PETITZINC' WHERE id = ?", est3);
 
 const COLORS = ['#3b82a0', '#7c6fb0', '#c0785a', '#5a9e7c', '#b0627c'];
 function collab(estId, owner, email, first, last, job, hours, i) {

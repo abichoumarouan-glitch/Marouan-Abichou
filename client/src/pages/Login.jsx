@@ -1,5 +1,6 @@
-import { useState } from 'react';
-import { Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { api } from '../api.js';
 import { useAuth, HOME } from '../auth.jsx';
 import { Button, Field, Icon, Logo } from '../ui.jsx';
 
@@ -12,15 +13,17 @@ export default function Login() {
   const [show, setShow] = useState(false);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
+  const [demo, setDemo] = useState(false);
+  useEffect(() => { api.get('/api/auth/config').then((c) => setDemo(c.demo)).catch(() => {}); }, []);
 
   if (user) return <Navigate to={HOME[user.role]} replace />;
 
-  const submit = async (e) => {
-    e.preventDefault();
+  const submit = async (e, creds) => {
+    e?.preventDefault();
     setError('');
     setBusy(true);
     try {
-      const u = await login(email, password);
+      const u = await login(creds?.email ?? email, creds?.password ?? password);
       const from = location.state?.from;
       navigate(from && from.startsWith(HOME[u.role]) ? from : HOME[u.role], { replace: true });
     } catch (err) {
@@ -69,7 +72,28 @@ export default function Login() {
           </Field>
           {error && <div className="notice notice--danger" role="alert"><Icon name="alert" size={18} /><span>{error}</span></div>}
           <Button type="submit" variant="primary" size="lg" loading={busy} className="btn--block">Se connecter</Button>
-          <p className="muted tiny center">Pas encore de compte ? Votre expert-comptable ou votre employeur vous crée un accès.</p>
+          <div className="login__signup">
+            <span className="muted small">Pas encore de compte ?</span>
+            <Link to="/inscription" className="btn btn--secondary btn--block"><Icon name="user" size={18} />Créer un compte comptable ou collaborateur</Link>
+            <span className="muted tiny center">Les comptes restaurateurs sont créés par leur expert-comptable.</span>
+          </div>
+          {demo && (
+            <div className="demo-box">
+              <strong className="small">Visiter avec un compte de démonstration</strong>
+              <div className="demo-box__grid">
+                {[
+                  ['restaurateur@mizu.demo', 'Restaurateur', 'building'],
+                  ['comptable@mizu.demo', 'Comptable', 'pie'],
+                  ['collaborateur@mizu.demo', 'Collaborateur', 'clock'],
+                ].map(([mail, label, icon]) => (
+                  <button key={mail} type="button" className="demo-box__btn" disabled={busy}
+                    onClick={() => { setEmail(mail); setPassword('Mizu-demo-2026'); submit(null, { email: mail, password: 'Mizu-demo-2026' }); }}>
+                    <Icon name={icon} size={20} />{label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
         </form>
       </div>
     </div>

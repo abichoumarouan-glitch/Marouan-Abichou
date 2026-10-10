@@ -36,16 +36,43 @@ export function createUser({ email, password, first_name, last_name = '', role, 
   );
 }
 
+const CODE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+function randomCode() {
+  return Array.from(crypto.randomBytes(6), (b) => CODE_ALPHABET[b % CODE_ALPHABET.length]).join('');
+}
+
+/** Code d'invitation de l'établissement (créé à la première demande). */
+export function joinCodeFor(estId, regenerate = false) {
+  const est = get('SELECT join_code FROM establishments WHERE id = ?', estId);
+  if (!est) return null;
+  if (est.join_code && !regenerate) return est.join_code;
+  for (;;) {
+    const code = randomCode();
+    if (!get('SELECT id FROM establishments WHERE join_code = ?', code)) {
+      run('UPDATE establishments SET join_code = ? WHERE id = ?', code, estId);
+      return code;
+    }
+  }
+}
+
+export function normalizeJoinCode(code) {
+  return String(code || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+}
+
+export function openSession(userId) {
+  const token = crypto.randomBytes(32).toString('hex');
+  const expires = new Date(Date.now() + SESSION_DAYS * 86400000).toISOString();
+  run('INSERT INTO sessions (token, user_id, created_at, expires_at) VALUES (?, ?, ?, ?)', token, userId, new Date().toISOString(), expires);
+  return token;
+}
+
 export function login(email, password) {
   const user = get('SELECT * FROM users WHERE email = ?', String(email || '').trim().toLowerCase());
   if (!user || !bcrypt.compareSync(String(password || ''), user.password_hash)) {
     fail(401, 'Email ou mot de passe incorrect.');
   }
   if (!user.active) fail(403, 'Ce compte a été désactivé.');
-  const token = crypto.randomBytes(32).toString('hex');
-  const expires = new Date(Date.now() + SESSION_DAYS * 86400000).toISOString();
-  run('INSERT INTO sessions (token, user_id, created_at, expires_at) VALUES (?, ?, ?, ?)', token, user.id, new Date().toISOString(), expires);
-  return { token, user };
+  return { token: openSession(user.id), user };
 }
 
 export function logout(token) {

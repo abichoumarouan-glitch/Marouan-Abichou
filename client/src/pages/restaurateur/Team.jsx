@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { api } from '../../api.js';
 import { useEst } from './RestaurateurApp.jsx';
-import { Badge, Button, Card, Confirm, Empty, ErrorBox, Field, Icon, Modal, PageHeader, PasswordReveal, Spinner, Tabs, useAction, useLoad } from '../../ui.jsx';
+import { Badge, Button, Card, Confirm, Empty, ErrorBox, Field, Icon, Modal, PageHeader, PasswordReveal, Spinner, Tabs, useAction, useLoad, useToast } from '../../ui.jsx';
 import { useRealtime } from '../../realtime.js';
 import { date, dateShort, dayName, dayNameLong, hhmm, time, minutes, todayIso, addDays, mondayOf } from '../../format.js';
 
@@ -352,7 +352,9 @@ function Corrections() {
 // ---------------- Collaborateurs ----------------
 function Members() {
   const { path, est } = useEst();
+  const toast = useToast();
   const { data, error, loading, reload } = useLoad(() => api.get(path('/team')));
+  useRealtime('refresh', (d) => d.scope === 'team' && reload(true));
   const [adding, setAdding] = useState(false);
   const [created, setCreated] = useState(null);
   const [form, setForm] = useState({ first_name: '', last_name: '', email: '', job_title: '', weekly_hours: '' });
@@ -362,8 +364,17 @@ function Members() {
   return (
     <>
       <ErrorBox error={error} onRetry={reload} />
-      <div className="row" style={{ marginBottom: 14 }}>
-        <Button variant="primary" icon="plus" onClick={() => { setCreated(null); setAdding(true); }}>Ajouter un collaborateur</Button>
+      <div className="grid grid-2" style={{ marginBottom: 18 }}>
+        <Card title="Créer le compte moi-même" subtitle="Vous saisissez l'email ; Mizu génère un mot de passe à transmettre.">
+          <Button variant="primary" icon="plus" onClick={() => { setCreated(null); setAdding(true); }}>Ajouter un collaborateur</Button>
+        </Card>
+        <Card title="Ou laisser l'employé s'inscrire" subtitle={`Il choisit « Créer un compte › Collaborateur » et saisit ce code : il rejoint ${est.name}.`}>
+          <div className="row">
+            <code className="join-code">{data.join_code}</code>
+            <Button size="sm" icon="copy" onClick={() => navigator.clipboard?.writeText(`Inscris-toi sur Mizu (${window.location.origin}/inscription) avec le code ${data.join_code}`).then(() => toast('Invitation copiée'))}>Copier l'invitation</Button>
+            <Button size="sm" variant="ghost" icon="refresh" onClick={() => run(async () => { await api.post(path('/team/join-code')); await reload(true); }, 'Nouveau code généré : l’ancien ne fonctionne plus')}>Nouveau code</Button>
+          </div>
+        </Card>
       </div>
       <Card pad={false}>
         <div className="table-wrap">

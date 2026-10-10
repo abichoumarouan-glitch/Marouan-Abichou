@@ -568,3 +568,24 @@ table.table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
   .sidebar, .topbar, .bottomnav, .page-header__actions { display: none !important; }
   .content { padding: 0; }
 }
+
+/* ---------- Inscription et connexion rapide ---------- */
+.login__signup { display: flex; flex-direction: column; gap: 8px; align-items: stretch; text-align: center; padding-top: 6px; border-top: 1px solid var(--line); margin-top: 4px; }
+.demo-box { background: var(--surface-2); border-radius: var(--radius); padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+.demo-box__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.demo-box__btn { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 10px 4px; border: 1px solid var(--line); background: var(--surface); border-radius: 10px; cursor: pointer; font-size: 0.82rem; font-weight: 600; color: var(--ink); }
+.demo-box__btn:hover { border-color: var(--accent-2); color: var(--accent-ink); }
+.demo-box__btn .icon { color: var(--accent); }
+.register { min-height: 100vh; display: flex; justify-content: center; padding: 40px 18px; background: var(--surface); }
+.register__form { width: 100%; max-width: 520px; display: flex; flex-direction: column; gap: 16px; }
+.role-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.role-card { display: flex; flex-direction: column; gap: 6px; text-align: left; padding: 16px; border: 1.5px solid var(--line); border-radius: var(--radius); background: var(--surface); cursor: pointer; }
+.role-card:hover { border-color: var(--accent-2); }
+.role-card.is-active { border-color: var(--accent); background: var(--accent-soft); box-shadow: 0 0 0 3px rgba(47, 134, 168, 0.14); }
+.role-card__icon { width: 40px; height: 40px; border-radius: 11px; background: var(--accent-soft); color: var(--accent); display: flex; align-items: center; justify-content: center; }
+.role-card.is-active .role-card__icon { background: var(--accent); color: #fff; }
+.join-code { font-size: 1.25rem; font-weight: 700; letter-spacing: 0.14em; padding: 6px 12px; background: var(--accent-soft); color: var(--accent-ink); }
+@media (max-width: 860px) {
+  .role-cards { grid-template-columns: minmax(0, 1fr); }
+  .register { padding: 24px 16px calc(24px + env(safe-area-inset-bottom)); }
+}

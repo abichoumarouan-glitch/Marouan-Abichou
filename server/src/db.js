@@ -342,6 +342,11 @@ CREATE TABLE IF NOT EXISTS settings (
 `;
 db.exec(SCHEMA);
 
+// Migrations légères pour les bases existantes
+const columns = (table) => db.prepare(`PRAGMA table_info(${table})`).all().map((c) => c.name);
+if (!columns('establishments').includes('join_code')) db.exec('ALTER TABLE establishments ADD COLUMN join_code TEXT');
+db.exec('CREATE UNIQUE INDEX IF NOT EXISTS establishments_join_code ON establishments(join_code)');
+
 // node:sqlite refuse `undefined` : un champ facultatif absent est enregistré comme NULL.
 const clean = (p) => p.map((v) => (v === undefined ? null : v));
 export const all = (sql, ...p) => db.prepare(sql).all(...clean(p));
